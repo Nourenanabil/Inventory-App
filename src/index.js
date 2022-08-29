@@ -87,23 +87,25 @@ const adminJs = new AdminJS({
 })
 
 
-const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
+// const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
 
-    authenticate: async (email, password) => {
+//     authenticate: async (email, password) => {
 
-        const user = await User.findOne({ email })
-        if (user) {
+//         const user = await User.findOne({ email })
+//         if (user) {
 
-            const matched = await bcrypt.compare(password, user.encryptedPassword)
-            if (matched) {
+//             const matched = await bcrypt.compare(password, user.encryptedPassword)
+//             if (matched) {
 
-                return user
-            }
-        }
-        return false
-    },
-    cookiePassword: 'secret-password',
-})
+//                 return user
+//             }
+//         }
+//         return false
+//     },
+//     cookiePassword: 'secret-password',
+// })
+
+const router = AdminJSExpress.buildRouter(adminJs)
 
 
 app.use(adminJs.options.rootPath, router)
