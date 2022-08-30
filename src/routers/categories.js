@@ -8,7 +8,7 @@ router.post('/category' , async(req,res)=>{
 
         const category = new Category(req.body)
         await category.save()
-        res.status(200).send(category)
+        res.status(201).send(category)
     }
     catch(e){
         res.status(400).send(e)
@@ -70,7 +70,7 @@ router.delete('/category/:id' , async (req,res)=>{
 
         }
         await category.remove()
-        res.status(200).send(category)
+        res.status(202).send("category deleted")
 
     }
     catch(e){

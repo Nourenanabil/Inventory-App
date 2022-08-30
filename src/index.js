@@ -20,7 +20,7 @@ const app = express()
 
 require('./db/mongoose')
 
-const canModifyCategories = ({ currentAdmin }) => {
+const canModify = ({ currentAdmin }) => {
 
     return currentAdmin && (
         currentAdmin.role === 'admin'
@@ -67,18 +67,16 @@ const adminJs = new AdminJS({
         }
     },
     {
-        resource: Category, options: {
-
-            actions: {
-                edit: { isAccessible: canModifyCategories },
-                delete: { isAccessible: canModifyCategories },
-            }
-        }
+        resource: Category,
     },
     { resource: Item },
     {
         resource: Order, options: {
-            navigation: false
+            navigation: false,
+            actions: {
+                edit: { isAccessible: canModify },
+                delete: { isAccessible: canModify },
+            }
         }
     },
     { resource: OrderItems },
@@ -104,9 +102,6 @@ const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
     },
     cookiePassword: 'secret-password',
 })
-
-// const router = AdminJSExpress.buildRouter(adminJs)
-
 
 app.use(adminJs.options.rootPath, router)
 
