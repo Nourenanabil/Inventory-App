@@ -5,12 +5,15 @@ const router = express.Router()
 router.post('/category' , async(req,res)=>{
 
     try{
-
+       
         const category = new Category(req.body)
+        
+
         await category.save()
-        res.status(201).send(category)
+        return res.status(201).send(category)
     }
     catch(e){
+        
         res.status(400).send(e)
     }
 

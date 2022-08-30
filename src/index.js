@@ -1,4 +1,6 @@
 const express = require('express')
+const bodyParserHandler = require('express-body-parser-error-handler')
+const bodyParser = require('body-parser')
 
 const User = require('./models/user')
 const Category = require('./models/categories')
@@ -17,6 +19,8 @@ const AdminJSMongoose = require('@adminjs/mongoose')
 AdminJS.registerAdapter(AdminJSMongoose)
 
 const app = express()
+
+
 
 require('./db/mongoose')
 
@@ -81,7 +85,7 @@ const adminJs = new AdminJS({
     },
     { resource: OrderItems },
     { resource: Vendor }],
-    rootPath: '/',
+    rootPath: '/admin',
 })
 
 
@@ -103,10 +107,16 @@ const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
     cookiePassword: 'secret-password',
 })
 
+
+
 app.use(adminJs.options.rootPath, router)
 
-
 app.use(express.json())
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 app.use(categoryRoutes)
 
 const port = process.env.PORT || 3000;
