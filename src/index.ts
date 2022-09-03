@@ -1,20 +1,24 @@
-const express = require('express')
-const bodyParserHandler = require('express-body-parser-error-handler')
-const bodyParser = require('body-parser')
+import { Router , Request , Response} from "express";
+import express from "express";
 
-const User = require('./models/user')
-const Category = require('./models/categories')
-const Item = require('./models/items')
-const Order = require('./models/orders')
-const OrderItems = require('./models/orderItems')
-const Vendor = require('./models/vendors')
+import bodyParser from "body-parser"
 
-const bcrypt = require('bcryptjs')
-const categoryRoutes = require('./routers/categories')
+import { User , Iuser } from "./models/user";
+import {Category} from "./models/categories";
+import {Item} from "./models/items";
+import {Order} from "./models/orders";
+import {OrderItems} from "./models/orderItems";
+import {Vendor} from "./models/vendors";
 
-const AdminJS = require('adminjs')
-const AdminJSExpress = require('@adminjs/express')
-const AdminJSMongoose = require('@adminjs/mongoose')
+
+import  categoryRouter from "./routers/categories";
+import  * as bcrypt from "bcryptjs";
+
+import AdminJS from "adminjs";
+import AdminJSExpress from "@adminjs/express";
+import AdminJSMongoose from "@adminjs/mongoose";
+
+
 
 AdminJS.registerAdapter(AdminJSMongoose)
 
@@ -24,7 +28,7 @@ const app = express()
 
 require('./db/mongoose')
 
-const canModify = ({ currentAdmin }) => {
+const canModify = ({ currentAdmin  }) => {
 
     return currentAdmin && (
         currentAdmin.role === 'admin'
@@ -73,14 +77,16 @@ const adminJs = new AdminJS({
     {
         resource: Category,
     },
-    { resource: Item },
+    { resource: Item , options:{
+        actions: {
+            edit: { isAccessible: canModify },
+            delete: { isAccessible: canModify },
+        }
+    } },
     {
         resource: Order, options: {
             navigation: false,
-            actions: {
-                edit: { isAccessible: canModify },
-                delete: { isAccessible: canModify },
-            }
+            
         }
     },
     { resource: OrderItems },
@@ -117,7 +123,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use(categoryRoutes)
+app.use(categoryRouter)
 
 const port = process.env.PORT || 3000;
 
